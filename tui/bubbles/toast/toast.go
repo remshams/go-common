@@ -8,7 +8,7 @@ type Model struct {
 	toast Toast
 }
 
-func InitModel() Model {
+func New() Model {
 	return Model{}
 }
 
