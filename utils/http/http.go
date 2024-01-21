@@ -1,6 +1,7 @@
 package dc_http
 
 import (
+	"bytes"
 	"context"
 	"io"
 	"net/http"
@@ -20,7 +21,7 @@ type HttpHeader struct {
 	Value string
 }
 
-func RequestWithTimeout(method string, headers []HttpHeader, url string, body io.Reader, timeout *time.Duration) (*http.Request, *http.Client, context.CancelFunc, error) {
+func RequestWithTimeout(method string, headers []HttpHeader, url string, body []byte, timeout *time.Duration) (*http.Request, *http.Client, context.CancelFunc, error) {
 	defaultTimeout := 2 * time.Second
 	requestTimeout := timeout
 	if requestTimeout == nil {
@@ -28,14 +29,14 @@ func RequestWithTimeout(method string, headers []HttpHeader, url string, body io
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), *requestTimeout)
 	client := &http.Client{}
-	req, err := http.NewRequestWithContext(ctx, method, url, body)
+	req, err := http.NewRequestWithContext(ctx, method, url, bytes.NewBuffer(body))
 	for _, header := range headers {
 		req.Header.Add(header.Type, header.Value)
 	}
 	return req, client, cancel, err
 }
 
-func PerformRequest(context string, path string, method string, headers []HttpHeader, body io.Reader, timeout *time.Duration) (*http.Response, error) {
+func PerformRequest(context string, path string, method string, headers []HttpHeader, body []byte, timeout *time.Duration) (*http.Response, error) {
 	log.Debugf("%s: Performing request with path: %s and method: %s", context, path, method)
 	req, client, cancel, err := RequestWithTimeout(
 		method,
