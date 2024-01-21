@@ -1,9 +1,8 @@
-package dc_http
+package utils_http
 
 import (
 	"bytes"
 	"context"
-	"io"
 	"net/http"
 	"time"
 
