@@ -46,7 +46,7 @@ type CursorState struct {
 	index  int
 }
 
-func InitCursorState(length int) CursorState {
+func New(length int) CursorState {
 	return CursorState{
 		length: length,
 		index:  0,
