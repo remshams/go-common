@@ -57,7 +57,7 @@ func (cursorState CursorState) Index() int {
 	return cursorState.index
 }
 
-func (cursorState *CursorState) Update(msg tea.Msg) {
+func (cursorState CursorState) Update(msg tea.Msg) CursorState {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch {
@@ -69,6 +69,7 @@ func (cursorState *CursorState) Update(msg tea.Msg) {
 			cursorState.Normalize()
 		}
 	}
+	return cursorState
 }
 
 func (cursorState *CursorState) Normalize() {
