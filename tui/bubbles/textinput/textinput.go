@@ -38,18 +38,20 @@ const (
 )
 
 type Model struct {
-	label string
-	unit  string
-	Input textinput.Model
-	state viewState
+	label        string
+	unit         string
+	Input        textinput.Model
+	currentValue string
+	state        viewState
 }
 
 func New(label string, unit string) Model {
 	return Model{
-		label: label,
-		unit:  unit,
-		Input: CreateTextInputModel(),
-		state: navigate,
+		label:        label,
+		unit:         unit,
+		Input:        CreateTextInputModel(),
+		currentValue: "",
+		state:        navigate,
 	}
 }
 
@@ -71,9 +73,11 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			}
 		case key.Matches(msg, TextInputKeyMap.Discard):
 			m.state = navigate
+			m.Input.SetValue(m.currentValue)
 			m.Input.Blur()
 		case key.Matches(msg, TextInputKeyMap.Apply):
 			m.state = navigate
+			m.currentValue = m.Input.Value()
 			m.Input.Blur()
 		default:
 			m.Input, cmd = m.Input.Update(msg)
