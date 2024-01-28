@@ -12,7 +12,8 @@ import (
 type HttpHeaderType = string
 
 const (
-	ContentType HttpHeaderType = "Content-Type"
+	ContentType   HttpHeaderType = "Content-Type"
+	Authorization HttpHeaderType = "Authorization"
 )
 
 type HttpHeader struct {
