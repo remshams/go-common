@@ -3,6 +3,8 @@ package utils_http
 import (
 	"bytes"
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -48,12 +50,12 @@ func PerformRequest(context string, path string, method string, headers []HttpHe
 	defer cancel()
 	res, err := client.Do(req)
 	if err != nil {
-		log.Error("%s: Could nor perform request", context)
+		log.Error("%s: Could not perform request", context)
 		return nil, err
 	}
 	if res.StatusCode != 200 {
-		log.Error("%s: Request failed with status code %d", context, res.StatusCode)
-		return nil, err
+		log.Errorf("%s: Request failed with status code %d", context, res.StatusCode)
+		return nil, errors.New(fmt.Sprintf("Request failed with status code %d", res.StatusCode))
 	}
 	return res, nil
 }
