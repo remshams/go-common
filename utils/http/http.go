@@ -3,8 +3,10 @@ package utils_http
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -59,6 +61,7 @@ func PerformRequest(context string, path string, method string, headers []HttpHe
 	}
 	return res, nil
 }
+
 func logErrorResponse(context string, res *http.Response) {
 	log.Errorf("%s: Request failed with status code %d", context, res.StatusCode)
 	defer res.Body.Close()
@@ -67,4 +70,12 @@ func logErrorResponse(context string, res *http.Response) {
 		log.Errorf("Could not convert response body")
 	}
 	log.Errorf("Response body: %s", string(body))
+}
+
+func CreateBasicAuthHeader(username string, password string) HttpHeader {
+	auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, password)))
+	return HttpHeader{
+		Type:  Authorization,
+		Value: fmt.Sprintf("Basic %s", auth),
+	}
 }
