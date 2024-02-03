@@ -53,9 +53,18 @@ func PerformRequest(context string, path string, method string, headers []HttpHe
 		log.Error("%s: Could not perform request", context)
 		return nil, err
 	}
-	if res.StatusCode != 200 {
-		log.Errorf("%s: Request failed with status code %d", context, res.StatusCode)
+	if res.StatusCode < 200 || res.StatusCode >= 300 {
+		logErrorResponse(context, res)
 		return nil, errors.New(fmt.Sprintf("Request failed with status code %d", res.StatusCode))
 	}
 	return res, nil
+}
+func logErrorResponse(context string, res *http.Response) {
+	log.Errorf("%s: Request failed with status code %d", context, res.StatusCode)
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Errorf("Could not convert response body")
+	}
+	log.Errorf("Response body: %s", string(body))
 }
