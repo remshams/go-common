@@ -3,10 +3,22 @@ package tabs
 import (
 	"fmt"
 
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/remshams/common/tui/styles"
 )
+
+type TabKeyMap struct {
+	Tab key.Binding
+}
+
+var TabKeys = TabKeyMap{
+	Tab: key.NewBinding(
+		key.WithKeys("tab"),
+		key.WithHelp("tab", "Switch tab"),
+	),
+}
 
 type TabSelectedMsg = int
 
@@ -36,8 +48,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "tab":
+		switch {
+		case key.Matches(msg, TabKeys.Tab):
 			cmd = m.navigate()
 		}
 	}
