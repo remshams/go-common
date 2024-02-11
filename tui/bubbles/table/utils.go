@@ -1,6 +1,7 @@
 package table_utils
 
 import (
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/table"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -26,4 +27,18 @@ func CreateTable(columns []table.Column, rows []table.Row) table.Model {
 	t.SetStyles(s)
 
 	return t
+}
+
+func TableKeyBindings() []key.Binding {
+	tableKeys := table.DefaultKeyMap()
+	return []key.Binding{
+		tableKeys.LineUp,
+		tableKeys.LineDown,
+		tableKeys.PageUp,
+		tableKeys.PageDown,
+		tableKeys.HalfPageUp,
+		tableKeys.HalfPageDown,
+		tableKeys.GotoTop,
+		tableKeys.GotoBottom,
+	}
 }
