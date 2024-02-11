@@ -40,7 +40,7 @@ func RequestWithTimeout(method string, headers []HttpHeader, url string, body []
 	return req, client, cancel, err
 }
 
-func PerformRequest(context string, path string, method string, headers []HttpHeader, body []byte, timeout *time.Duration) (*http.Response, error) {
+func PerformRequest(context string, path string, method string, headers []HttpHeader, body []byte, timeout *time.Duration) (*http.Response, []byte, error) {
 	log.Debugf("%s: Performing request with path: %s and method: %s", context, path, method)
 	req, client, cancel, err := RequestWithTimeout(
 		method,
@@ -53,13 +53,18 @@ func PerformRequest(context string, path string, method string, headers []HttpHe
 	res, err := client.Do(req)
 	if err != nil {
 		log.Error("%s: Could not perform request", context)
-		return nil, err
+		return nil, nil, err
 	}
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		logErrorResponse(context, res)
-		return nil, errors.New(fmt.Sprintf("Request failed with status code %d", res.StatusCode))
+		return nil, nil, errors.New(fmt.Sprintf("Request failed with status code %d", res.StatusCode))
 	}
-	return res, nil
+	resBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Error("%s: Could not read response body", context)
+		return nil, nil, err
+	}
+	return res, resBody, nil
 }
 
 func logErrorResponse(context string, res *http.Response) {
