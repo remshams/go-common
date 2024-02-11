@@ -21,6 +21,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case SetKeyMapMsg:
 		m.keyMap = &msg.keyMap
+	case ToggleFullHelp:
+		m.help.ShowAll = !m.help.ShowAll
 	case ResetKeyMapMsg:
 		m.keyMap = nil
 	}
