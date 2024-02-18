@@ -9,6 +9,18 @@ import (
 	"github.com/remshams/common/tui/styles"
 )
 
+type SelectTabAction struct {
+	Index int
+}
+
+func CreateSelectTabAction(index int) tea.Cmd {
+	return func() tea.Msg {
+		return SelectTabAction{
+			Index: index,
+		}
+	}
+}
+
 type TabKeyMap struct {
 	Tab key.Binding
 }
@@ -47,6 +59,8 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
+	case SelectTabAction:
+		m.active = msg.Index
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, TabKeys.Tab):
