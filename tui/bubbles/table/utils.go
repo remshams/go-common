@@ -1,8 +1,6 @@
 package table_utils
 
 import (
-	"math"
-
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/table"
 	"github.com/charmbracelet/lipgloss"
@@ -43,8 +41,4 @@ func TableKeyBindings() []key.Binding {
 		tableKeys.GotoTop,
 		tableKeys.GotoBottom,
 	}
-}
-
-func ColumnWidthFromPercent(percent int, totalWidth int) int {
-	return int(math.Round(float64(totalWidth) * (float64(percent) / 100)))
 }
