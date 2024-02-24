@@ -25,7 +25,19 @@ type HttpHeader struct {
 	Value string
 }
 
-func RequestWithTimeout(method string, headers []HttpHeader, url string, body []byte, timeout *time.Duration) (*http.Request, *http.Client, context.CancelFunc, error) {
+type QueryParam struct {
+	Key   string
+	Value string
+}
+
+func RequestWithTimeout(
+	method string,
+	headers []HttpHeader,
+	url string,
+	queryParams []QueryParam,
+	body []byte,
+	timeout *time.Duration,
+) (*http.Request, *http.Client, context.CancelFunc, error) {
 	defaultTimeout := 2 * time.Second
 	requestTimeout := timeout
 	if requestTimeout == nil {
@@ -37,15 +49,22 @@ func RequestWithTimeout(method string, headers []HttpHeader, url string, body []
 	for _, header := range headers {
 		req.Header.Add(header.Type, header.Value)
 	}
+	query := req.URL.Query()
+	for _, qp := range queryParams {
+		query.Add(qp.Key, qp.Value)
+	}
+	log.Debugf("Request queries: %v", query)
+	req.URL.RawQuery = query.Encode()
 	return req, client, cancel, err
 }
 
-func PerformRequest(context string, path string, method string, headers []HttpHeader, body []byte, timeout *time.Duration) (*http.Response, []byte, error) {
+func PerformRequest(context string, path string, method string, headers []HttpHeader, queryParams []QueryParam, body []byte, timeout *time.Duration) (*http.Response, []byte, error) {
 	log.Debugf("%s: Performing request with path: %s and method: %s", context, path, method)
 	req, client, cancel, err := RequestWithTimeout(
 		method,
 		headers,
 		path,
+		queryParams,
 		body,
 		timeout,
 	)
