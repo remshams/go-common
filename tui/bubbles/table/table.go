@@ -41,7 +41,7 @@ var DefaultKeyBindings = []key.Binding{
 }
 
 type Model[T any] struct {
-	Table         table.Model
+	table         table.Model
 	createColumns CreateColumnsFunc
 	createRows    CreateRowsFunc[T]
 	values        T
@@ -52,7 +52,7 @@ type Model[T any] struct {
 
 func New[T any](createColumns CreateColumnsFunc, createRows CreateRowsFunc[T], widthOffset int, heightOffset int) Model[T] {
 	return Model[T]{
-		Table:         table.New(table.WithFocused(true)),
+		table:         table.New(table.WithFocused(true)),
 		createColumns: createColumns,
 		createRows:    createRows,
 		widthOffset:   widthOffset,
@@ -78,7 +78,7 @@ func (m Model[T]) Update(msg tea.Msg) (Model[T], tea.Cmd) {
 		m.values = msg.(TableDataUpdatedAction[T]).values
 		m.refreshTable()
 	default:
-		m.Table, cmd = m.Table.Update(msg)
+		m.table, cmd = m.table.Update(msg)
 	}
 	return m, cmd
 }
@@ -91,7 +91,7 @@ func (m Model[T]) View() string {
 			Align(lipgloss.Center)
 		return style.Render(m.noDataMessage)
 	}
-	return m.Table.View()
+	return m.table.View()
 }
 
 func (m Model[T]) calculateTableDimensions() (int, int) {
@@ -105,17 +105,17 @@ func (m Model[T]) calculateTableDimensions() (int, int) {
 
 func (m *Model[T]) refreshTable() {
 	width, height := m.calculateTableDimensions()
-	m.Table.SetWidth(width)
-	m.Table.SetHeight(height)
-	m.Table.SetColumns(m.createColumns(width))
-	m.Table.SetRows(m.createRows(m.values))
-	m.Table.GotoTop()
+	m.table.SetWidth(width)
+	m.table.SetHeight(height)
+	m.table.SetColumns(m.createColumns(width))
+	m.table.SetRows(m.createRows(m.values))
+	m.table.GotoTop()
 }
 
 func (m Model[T]) IsEmpty() bool {
-	return len(m.Table.Rows()) == 0
+	return len(m.table.Rows()) == 0
 }
 
 func (m Model[T]) SelectedRowCell(column int) string {
-	return m.Table.SelectedRow()[column]
+	return m.table.SelectedRow()[column]
 }
