@@ -4,6 +4,7 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/remshams/common/tui/styles"
 	app_store "github.com/remshams/jira-control/tui/store"
 )
@@ -46,6 +47,7 @@ type Model[T any] struct {
 	values        T
 	widthOffset   int
 	heightOffset  int
+	noDataMessage string
 }
 
 func New[T any](createColumns CreateColumnsFunc, createRows CreateRowsFunc[T], widthOffset int, heightOffset int) Model[T] {
@@ -56,6 +58,11 @@ func New[T any](createColumns CreateColumnsFunc, createRows CreateRowsFunc[T], w
 		widthOffset:   widthOffset,
 		heightOffset:  heightOffset,
 	}
+}
+
+func (m Model[T]) WithNotDataMessage(message string) Model[T] {
+	m.noDataMessage = message
+	return m
 }
 
 func (m Model[T]) Init() tea.Cmd {
@@ -77,6 +84,13 @@ func (m Model[T]) Update(msg tea.Msg) (Model[T], tea.Cmd) {
 }
 
 func (m Model[T]) View() string {
+	if m.IsEmpty() {
+		style := lipgloss.NewStyle().
+			Foreground(styles.SelectedColor).
+			Width(app_store.LayoutStore.Width).
+			Align(lipgloss.Center)
+		return style.Render(m.noDataMessage)
+	}
 	return m.Table.View()
 }
 
