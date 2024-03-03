@@ -97,3 +97,7 @@ func (m *Model[T]) refreshTable() {
 	m.Table.SetRows(m.createRows(m.values))
 	m.Table.GotoTop()
 }
+
+func (m Model[T]) IsEmpty() bool {
+	return len(m.Table.Rows()) == 0
+}
