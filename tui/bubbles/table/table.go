@@ -28,17 +28,17 @@ type Row = table.Row
 var DefaultKeyMap = table.DefaultKeyMap()
 
 type Model[T any] struct {
-	Table           table.Model
-	createColumns   CreateColumnsFunc
-	createTableRows CreateRowsFunc[T]
-	values          T
+	Table         table.Model
+	createColumns CreateColumnsFunc
+	createRows    CreateRowsFunc[T]
+	values        T
 }
 
-func New[T any](columnsFactory CreateColumnsFunc, createTableRows CreateRowsFunc[T]) Model[T] {
+func New[T any](createColumns CreateColumnsFunc, createRows CreateRowsFunc[T]) Model[T] {
 	return Model[T]{
-		Table:           table.New(table.WithFocused(true)),
-		createColumns:   columnsFactory,
-		createTableRows: createTableRows,
+		Table:         table.New(table.WithFocused(true)),
+		createColumns: createColumns,
+		createRows:    createRows,
 	}
 }
 
@@ -50,10 +50,10 @@ func (m Model[T]) Update(msg tea.Msg) (Model[T], tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg.(type) {
 	case tea.WindowSizeMsg:
-		m.recalculateTableLayout()
+		m.refreshTable()
 	case TableDataUpdatedAction[T]:
 		m.values = msg.(TableDataUpdatedAction[T]).values
-		m.recalculateTableLayout()
+		m.refreshTable()
 	default:
 		m.Table, cmd = m.Table.Update(msg)
 	}
@@ -73,10 +73,10 @@ func (m Model[T]) calculateTableDimensions() (int, int) {
 	return width, height
 }
 
-func (m *Model[T]) recalculateTableLayout() {
+func (m *Model[T]) refreshTable() {
 	width, height := m.calculateTableDimensions()
 	m.Table.SetWidth(width)
 	m.Table.SetHeight(height)
 	m.Table.SetColumns(m.createColumns(width))
-	m.Table.SetRows(m.createTableRows(m.values))
+	m.Table.SetRows(m.createRows(m.values))
 }
