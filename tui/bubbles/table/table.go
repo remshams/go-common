@@ -95,4 +95,5 @@ func (m *Model[T]) refreshTable() {
 	m.Table.SetHeight(height)
 	m.Table.SetColumns(m.createColumns(width))
 	m.Table.SetRows(m.createRows(m.values))
+	m.Table.GotoTop()
 }
