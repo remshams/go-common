@@ -10,7 +10,7 @@ func TestCalculateDimensionsFromPercentage_ShouldReturnPercentage(t *testing.T) 
 	percent := 50
 	total := 100
 	absolute := 50
-	dimensions := CalculateDimensionsFromPercentage(percent, total, nil)
+	dimensions := CalculateDimensionsFromPercentage(percent, total, UnlimitedDimension)
 	assert.Equal(t, absolute, dimensions)
 }
 
@@ -18,6 +18,6 @@ func TestCalculateDimensionsFromPercentage_ShouldReturnMax(t *testing.T) {
 	percent := 50
 	total := 100
 	max := 25
-	dimensions := CalculateDimensionsFromPercentage(percent, total, &max)
+	dimensions := CalculateDimensionsFromPercentage(percent, total, max)
 	assert.Equal(t, max, dimensions)
 }
