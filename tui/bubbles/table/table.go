@@ -32,13 +32,17 @@ type Model[T any] struct {
 	createColumns CreateColumnsFunc
 	createRows    CreateRowsFunc[T]
 	values        T
+	widthOffset   int
+	heightOffset  int
 }
 
-func New[T any](createColumns CreateColumnsFunc, createRows CreateRowsFunc[T]) Model[T] {
+func New[T any](createColumns CreateColumnsFunc, createRows CreateRowsFunc[T], widthOffset int, heightOffset int) Model[T] {
 	return Model[T]{
 		Table:         table.New(table.WithFocused(true)),
 		createColumns: createColumns,
 		createRows:    createRows,
+		widthOffset:   widthOffset,
+		heightOffset:  heightOffset,
 	}
 }
 
@@ -65,8 +69,8 @@ func (m Model[T]) View() string {
 }
 
 func (m Model[T]) calculateTableDimensions() (int, int) {
-	width := app_store.LayoutStore.Width - 5
-	height := app_store.LayoutStore.Height - 8
+	width := app_store.LayoutStore.Width - m.widthOffset
+	height := app_store.LayoutStore.Height - m.heightOffset
 	if height < 0 {
 		height = styles.CalculateDimensionsFromPercentage(80, app_store.LayoutStore.Height, styles.UnlimitedDimension)
 	}
