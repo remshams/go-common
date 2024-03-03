@@ -101,3 +101,7 @@ func (m *Model[T]) refreshTable() {
 func (m Model[T]) IsEmpty() bool {
 	return len(m.Table.Rows()) == 0
 }
+
+func (m Model[T]) SelectedRowCell(column int) string {
+	return m.Table.SelectedRow()[column]
+}
