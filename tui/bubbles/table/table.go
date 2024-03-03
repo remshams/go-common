@@ -1,6 +1,7 @@
 package table
 
 import (
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/remshams/common/tui/styles"
@@ -26,6 +27,17 @@ type Column = table.Column
 type Row = table.Row
 
 var DefaultKeyMap = table.DefaultKeyMap()
+
+var DefaultKeyBindings = []key.Binding{
+	DefaultKeyMap.LineUp,
+	DefaultKeyMap.LineDown,
+	DefaultKeyMap.PageUp,
+	DefaultKeyMap.PageDown,
+	DefaultKeyMap.HalfPageUp,
+	DefaultKeyMap.HalfPageDown,
+	DefaultKeyMap.GotoTop,
+	DefaultKeyMap.GotoBottom,
+}
 
 type Model[T any] struct {
 	Table         table.Model
