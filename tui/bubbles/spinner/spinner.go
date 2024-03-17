@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/remshams/common/tui/styles"
+	app_store "github.com/remshams/jira-control/tui/store"
 )
 
 type Model struct {
@@ -39,8 +40,18 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	styles := lipgloss.NewStyle().Foreground(styles.SelectedColor)
-	return fmt.Sprintf("%s %s", m.spinner.View(), styles.Render(m.label))
+	spinnerStyles := lipgloss.NewStyle().
+		Width(app_store.LayoutStore.Width).
+		Align(lipgloss.Center)
+	labelStyles := lipgloss.NewStyle().
+		Foreground(styles.SelectedColor)
+	return spinnerStyles.Render(
+		fmt.Sprintf(
+			"%s %s",
+			m.spinner.View(),
+			labelStyles.Render(m.label),
+		),
+	)
 }
 
 func (m Model) Tick() tea.Cmd {
