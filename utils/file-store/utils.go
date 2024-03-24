@@ -29,11 +29,21 @@ func CreateOrUpdateFile(path string, data []byte) error {
 	return err
 }
 
-func CreateHomePath(path string) string {
+func GetHomePath(path string) string {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Warn("Could not get home directory, writing to current directory")
 		home = "./"
 	}
 	return filepath.Join(home, path)
+}
+
+func LoadFile(path string) []byte {
+	log.Debugf("Loading file: %v", path)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		log.Warnf("File does not exist %s", path)
+		return []byte{}
+	}
+	return data
 }
