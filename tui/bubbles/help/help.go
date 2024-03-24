@@ -2,6 +2,7 @@ package help
 
 import (
 	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -18,15 +19,19 @@ func New() Model {
 }
 
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case SetKeyMapMsg:
 		m.keyMap = &msg.keyMap
-	case ToggleFullHelp:
-		m.help.ShowAll = !m.help.ShowAll
 	case ResetKeyMapMsg:
 		m.keyMap = nil
+	case tea.KeyMsg:
+		switch {
+		case key.Matches(msg, HelpKeys.Help):
+			m.help.ShowAll = !m.help.ShowAll
+		}
 	}
-	return m, nil
+	return m, cmd
 }
 
 func (m Model) View() string {
