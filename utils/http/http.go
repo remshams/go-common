@@ -103,3 +103,10 @@ func CreateBasicAuthHeader(username string, password string) HttpHeader {
 		Value: fmt.Sprintf("Basic %s", auth),
 	}
 }
+
+func CreateBearerTokenHeader(token string) HttpHeader {
+	return HttpHeader{
+		Type:  Authorization,
+		Value: fmt.Sprintf("Bearer %s", token),
+	}
+}
