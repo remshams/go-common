@@ -71,7 +71,7 @@ func PerformRequest(context string, path string, method string, headers []HttpHe
 	defer cancel()
 	res, err := client.Do(req)
 	if err != nil {
-		log.Error("%s: Could not perform request", context)
+		log.Errorf("%s: Could not perform request", context)
 		return nil, nil, err
 	}
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
